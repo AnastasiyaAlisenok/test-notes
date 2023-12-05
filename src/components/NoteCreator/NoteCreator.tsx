@@ -1,17 +1,9 @@
 import { useState } from 'react';
-import {
-  TextField,
-  InputAdornment,
-  Modal,
-  Box,
-  Button,
-  Stack,
-} from '@mui/material';
-import styles from './NoteCreator.module.css';
+import { TextField, InputAdornment } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { addNotes } from '../../store/Notes.slice';
 import { RootState } from '../../store/store';
-import { ColorButton, style } from './styles';
+import ModalCustom from '../Modal/ModalCustom';
 
 const NoteCreator = (): JSX.Element => {
   const [open, setOpen] = useState(false);
@@ -29,6 +21,16 @@ const NoteCreator = (): JSX.Element => {
     setTitle('');
     setDescription('');
     setErrorTitle(false);
+    setErrorText(false);
+  };
+
+  const changeTitle = (value: string): void => {
+    setTitle(value);
+    setErrorTitle(false);
+  };
+
+  const changeText = (value: string): void => {
+    setDescription(value);
     setErrorText(false);
   };
 
@@ -53,62 +55,17 @@ const NoteCreator = (): JSX.Element => {
           endAdornment: <InputAdornment position="end">+</InputAdornment>,
         }}
       />
-      <Modal
+      <ModalCustom
         open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <TextField
-            className={styles.textField}
-            id="modal-modal-title"
-            value={title}
-            placeholder="Add title..."
-            error={errorTitle}
-            helperText={errorTitle ? 'Enter title!' : ''}
-            onChange={(event) => {
-              setTitle(event.target.value);
-              setErrorTitle(false);
-            }}
-          />
-          <TextField
-            id="modal-modal-description"
-            placeholder="Add note text..."
-            value={description}
-            rows={5}
-            error={errorText}
-            helperText={errorText ? 'Enter description!' : ''}
-            multiline
-            onChange={(event) => {
-              setDescription(event.target.value);
-              setErrorText(false);
-            }}
-          />
-          <Stack
-            flexDirection={'row'}
-            justifyContent={'flex-end'}
-            alignItems={'center'}
-            useFlexGap
-            spacing={2}
-          >
-            <Button
-              className={styles.button}
-              sx={{ color: '#f09a06' }}
-              onClick={handleClose}
-            >
-              Chancel
-            </Button>
-            <ColorButton
-              className={styles.button}
-              variant="contained"
-              onClick={addNewNote}
-            >
-              Add
-            </ColorButton>
-          </Stack>
-        </Box>
-      </Modal>
+        errorText={errorText}
+        errorTitle={errorTitle}
+        text={description}
+        title={title}
+        handleClick={addNewNote}
+        handleClose={handleClose}
+        changeTitle={changeTitle}
+        changeText={changeText}
+      />
     </>
   );
 };
