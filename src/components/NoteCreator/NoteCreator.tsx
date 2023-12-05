@@ -10,6 +10,9 @@ import {
   ButtonProps,
 } from '@mui/material';
 import styles from './NoteCreator.module.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { addNotes } from '../../store/Notes.slice';
+import { RootState } from '../../store/store';
 
 const style = {
   position: 'absolute',
@@ -35,14 +38,37 @@ const ColorButton = styled(Button)<ButtonProps>(() => ({
 
 const NoteCreator = (): JSX.Element => {
   const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [errorTitle, setErrorTitle] = useState(false);
+  const [errorText, setErrorText] = useState(false);
   const handleOpen = (): void => setOpen(true);
-  const handleClose = (): void => setOpen(false);
+  const handleClose = (): void => {
+    setOpen(false);
+    setTitle('');
+    setDescription('');
+    setErrorTitle(false);
+    setErrorText(false);
+  };
+  const dispatch = useDispatch();
+  const notes = useSelector((state: RootState) => state.notes);
+  const addNewNote = (): void => {
+    if (title.length === 0) {
+      setErrorTitle(true);
+    } else if (description.length === 0) {
+      setErrorText(true);
+    } else {
+      dispatch(addNotes({ title, text: description }));
+      handleClose();
+    }
+  };
+  console.log(notes);
   return (
     <>
       <TextField
         onClick={handleOpen}
-        className={styles.noteCreator}
         placeholder="Add note"
+        sx={{ bgcolor: '#ffffff' }}
         InputProps={{
           endAdornment: <InputAdornment position="end">+</InputAdornment>,
         }}
@@ -57,13 +83,27 @@ const NoteCreator = (): JSX.Element => {
           <TextField
             className={styles.textField}
             id="modal-modal-title"
+            value={title}
             placeholder="Add title..."
+            error={errorTitle}
+            helperText={errorTitle ? 'Enter title!' : ''}
+            onChange={(event) => {
+              setTitle(event.target.value);
+              setErrorTitle(false);
+            }}
           />
           <TextField
             id="modal-modal-description"
             placeholder="Add note text..."
+            value={description}
             rows={5}
+            error={errorText}
+            helperText={errorText ? 'Enter description!' : ''}
             multiline
+            onChange={(event) => {
+              setDescription(event.target.value);
+              setErrorText(false);
+            }}
           />
           <Stack
             flexDirection={'row'}
@@ -79,7 +119,11 @@ const NoteCreator = (): JSX.Element => {
             >
               Chancel
             </Button>
-            <ColorButton className={styles.button} variant="contained">
+            <ColorButton
+              className={styles.button}
+              variant="contained"
+              onClick={addNewNote}
+            >
               Add
             </ColorButton>
           </Stack>
