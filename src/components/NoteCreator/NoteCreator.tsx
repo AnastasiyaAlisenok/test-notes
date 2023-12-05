@@ -6,35 +6,12 @@ import {
   Box,
   Button,
   Stack,
-  styled,
-  ButtonProps,
 } from '@mui/material';
 import styles from './NoteCreator.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { addNotes } from '../../store/Notes.slice';
 import { RootState } from '../../store/store';
-
-const style = {
-  position: 'absolute',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '20px',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
-const ColorButton = styled(Button)<ButtonProps>(() => ({
-  backgroundColor: '#f09a06',
-  '&:hover': {
-    backgroundColor: '#fdbd4e',
-  },
-}));
+import { ColorButton, style } from './styles';
 
 const NoteCreator = (): JSX.Element => {
   const [open, setOpen] = useState(false);
@@ -42,7 +19,11 @@ const NoteCreator = (): JSX.Element => {
   const [description, setDescription] = useState('');
   const [errorTitle, setErrorTitle] = useState(false);
   const [errorText, setErrorText] = useState(false);
+  const dispatch = useDispatch();
+  const notes = useSelector((state: RootState) => state.notes);
+
   const handleOpen = (): void => setOpen(true);
+
   const handleClose = (): void => {
     setOpen(false);
     setTitle('');
@@ -50,8 +31,7 @@ const NoteCreator = (): JSX.Element => {
     setErrorTitle(false);
     setErrorText(false);
   };
-  const dispatch = useDispatch();
-  const notes = useSelector((state: RootState) => state.notes);
+
   const addNewNote = (): void => {
     if (title.length === 0) {
       setErrorTitle(true);
