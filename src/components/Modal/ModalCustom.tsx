@@ -1,31 +1,47 @@
-import { TextField, Modal, Box, Button, Stack } from '@mui/material';
+import { Modal, Box, Button, Stack } from '@mui/material';
+import { useRef, useEffect, useState, FormEvent } from 'react';
 import { style, ColorButton } from './styles';
 import styles from './ModalCustom.module.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { addTag } from '../../store/Tags.slice';
+import colorText from '../../utils/colorText';
+import addRange from '../../utils/addRange';
 
 interface ModalCustomPropsType {
   open: boolean;
-  title: string;
-  text: string;
-  errorTitle: boolean;
-  errorText: boolean;
-  handleClose: () => void;
-  changeTitle: (value: string) => void;
   changeText: (value: string) => void;
+  handleClose: () => void;
   handleClick: () => void;
 }
 
 const ModalCustom = (props: ModalCustomPropsType): JSX.Element => {
-  const {
-    open,
-    handleClose,
-    title,
-    text,
-    errorText,
-    errorTitle,
-    changeText,
-    changeTitle,
-    handleClick,
-  } = props;
+  const { open, handleClose, changeText, handleClick } = props;
+  const [tag, setTag] = useState('');
+  const dispatch = useDispatch();
+  const tags = useSelector((state: RootState) => state.tags.hashtagWords);
+  const divRef = useRef(null);
+
+  useEffect(() => {
+    addRange(divRef.current);
+  }, [tag]);
+
+  const handleInputChange = (event: FormEvent<HTMLDivElement>): void => {
+    const data = colorText(event);
+    if (data) {
+      changeText(data.inputText);
+      setTag(data.coloredText);
+      dispatch(addTag(data.inputText));
+    }
+  };
+
+  const clearTextField = (): void => {
+    if (divRef.current) {
+      (divRef.current as HTMLDivElement).innerHTML = '';
+      setTag('');
+    }
+  };
+
   return (
     <Modal
       open={open}
@@ -34,28 +50,21 @@ const ModalCustom = (props: ModalCustomPropsType): JSX.Element => {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <TextField
-          id="modal-modal-title"
-          value={title}
-          placeholder="Add title..."
-          error={errorTitle}
-          helperText={errorTitle ? 'Enter title!' : ''}
-          onChange={(event) => {
-            changeTitle(event.target.value);
-          }}
-        />
-        <TextField
-          id="modal-modal-description"
-          placeholder="Add note text..."
-          value={text}
-          rows={5}
-          error={errorText}
-          helperText={errorText ? 'Enter description!' : ''}
-          multiline
-          onChange={(event) => {
-            changeText(event.target.value);
-          }}
-        />
+        <div
+          className={styles.field}
+          ref={divRef}
+          onInput={handleInputChange}
+          contentEditable={true}
+          dangerouslySetInnerHTML={{ __html: tag }}
+        ></div>
+        <div className={styles.tagsContainer}>
+          {tags &&
+            tags.map((tag, index) => (
+              <span className={styles.tag} key={index}>
+                {tag}
+              </span>
+            ))}
+        </div>
         <Stack
           flexDirection={'row'}
           justifyContent={'flex-end'}
@@ -66,14 +75,20 @@ const ModalCustom = (props: ModalCustomPropsType): JSX.Element => {
           <Button
             className={styles.button}
             sx={{ color: '#f09a06' }}
-            onClick={handleClose}
+            onClick={() => {
+              handleClose();
+              clearTextField();
+            }}
           >
             Chancel
           </Button>
           <ColorButton
             className={styles.button}
             variant="contained"
-            onClick={handleClick}
+            onClick={() => {
+              handleClick();
+              clearTextField();
+            }}
           >
             Add
           </ColorButton>

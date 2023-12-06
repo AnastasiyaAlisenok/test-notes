@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export type NotesType = {
-  title: string;
   text: string;
 };
 
@@ -19,7 +18,6 @@ const notesSlice = createSlice({
     },
     updateItem: (state, action) => {
       const { index, data } = action.payload;
-      state[index].title = data.title;
       state[index].text = data.text;
     },
   },

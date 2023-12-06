@@ -1,4 +1,8 @@
 .noteCreator {
-  width: 30rem;
+  width: 25rem;
   background-color: #fff;
+  color: #000;
+  margin: 0 auto;
+  padding: 5px;
+  text-align: left;
 }
