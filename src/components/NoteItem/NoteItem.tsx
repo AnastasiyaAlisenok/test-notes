@@ -10,22 +10,27 @@ import colorText from '../../utils/colorText';
 import { addTag } from '../../store/Tags.slice';
 import addRange from '../../utils/addRange';
 import { RootState } from '../../store/store';
+import { addTagsToCommonStore } from '../../store/AllTags.slice';
 
 interface INoteItemType {
-  index: number;
   note: NotesType;
 }
 
 const NoteItem = (props: INoteItemType): JSX.Element => {
-  const { index, note } = props;
+  const { note } = props;
   const [textItem, setTextItem] = useState(note.text);
   const [edit, setEdit] = useState(false);
   const itemRef = useRef(null);
   const dispatch = useDispatch();
+  const tags = useSelector((state: RootState) => state.tags);
 
   useEffect(() => {
     addRange(itemRef.current);
   }, [textItem]);
+
+  useEffect(() => {
+    setTextItem(note.text);
+  }, [note]);
 
   const handleInputChange = (event: FormEvent<HTMLDivElement>): void => {
     const data = colorText(event);
@@ -41,24 +46,34 @@ const NoteItem = (props: INoteItemType): JSX.Element => {
     const data = {
       text: textItem,
     };
-    dispatch(updateItem({ index, data }));
+    dispatch(updateItem({ index: note.id, data }));
+    if (tags) {
+      dispatch(addTagsToCommonStore(tags));
+    }
+  };
+
+  const editNote = (): void => {
+    setEdit(true);
+    if (itemRef.current) {
+      (itemRef.current as HTMLInputElement)?.focus();
+    }
   };
 
   return (
     <ListItem
       style={listItemStyle}
-      key={index}
+      key={note.id}
       secondaryAction={
-        <Stack useFlexGap flexDirection={'row'} spacing={1}>
+        <Stack useFlexGap flexDirection={'column'} spacing={1}>
           <IconButton
             edge="end"
             aria-label="edit"
-            onClick={() => (edit ? saveNote() : setEdit(true))}
+            onClick={() => (edit ? saveNote() : editNote())}
           >
             {edit ? <Save /> : <Edit />}
           </IconButton>
           <IconButton
-            onClick={() => dispatch(deleteNote(index))}
+            onClick={() => dispatch(deleteNote(note.id))}
             edge="end"
             aria-label="delete"
           >
@@ -71,7 +86,8 @@ const NoteItem = (props: INoteItemType): JSX.Element => {
         style={text}
         ref={itemRef}
         onInput={handleInputChange}
-        onClick={handleInputChange}
+        onClick={(e) => e.preventDefault()}
+        onFocus={handleInputChange}
         contentEditable={edit}
         dangerouslySetInnerHTML={{ __html: textItem }}
       ></div>

@@ -7,6 +7,7 @@ import { RootState } from '../../store/store';
 import { addTag } from '../../store/Tags.slice';
 import colorText from '../../utils/colorText';
 import addRange from '../../utils/addRange';
+import { addTagsToCommonStore } from '../../store/AllTags.slice';
 
 interface ModalCustomPropsType {
   open: boolean;
@@ -88,6 +89,9 @@ const ModalCustom = (props: ModalCustomPropsType): JSX.Element => {
             onClick={() => {
               handleClick();
               clearTextField();
+              if (tag) {
+                dispatch(addTagsToCommonStore(tag));
+              }
             }}
           >
             Add

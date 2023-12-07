@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export type NotesType = {
+  id: number;
   text: string;
 };
 
@@ -14,11 +15,15 @@ const notesSlice = createSlice({
       state.push(action.payload);
     },
     deleteNote: (state, action) => {
-      return state.filter((val, i) => i !== action.payload);
+      return state.filter((note) => note.id !== action.payload);
     },
     updateItem: (state, action) => {
-      const { index, data } = action.payload;
-      state[index].text = data.text;
+      const { id, data } = action.payload;
+      state.forEach((note) => {
+        if (note.id === id) {
+          note.text = data.text;
+        }
+      });
     },
   },
 });

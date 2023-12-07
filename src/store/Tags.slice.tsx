@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-type TagsType = {
+export type TagsType = {
   hashtagWords: string[];
 };
 

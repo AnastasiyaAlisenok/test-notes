@@ -18,7 +18,7 @@ const NoteCreator = (): JSX.Element => {
 
   const addNewNote = (): void => {
     if (description.length > 0) {
-      dispatch(addNotes({ text: description }));
+      dispatch(addNotes({ id: crypto.randomUUID(), text: description }));
       handleClose();
     }
   };
@@ -28,7 +28,12 @@ const NoteCreator = (): JSX.Element => {
       <TextField
         onClick={handleOpen}
         placeholder="Add note"
-        sx={{ bgcolor: '#ffffff' }}
+        sx={{
+          bgcolor: '#ffffff',
+          marginBottom: '40px',
+          width: '25rem',
+          borderRadius: '5px',
+        }}
         InputProps={{
           endAdornment: <InputAdornment position="end">+</InputAdornment>,
         }}
