@@ -10,7 +10,10 @@ import { colorText, colorTextString } from '../../utils/colorText';
 import { addTag } from '../../store/Tags.slice';
 import addRange from '../../utils/addRange';
 import { RootState } from '../../store/store';
-import { addTagsToCommonStore } from '../../store/AllTags.slice';
+import {
+  addTagsToCommonStore,
+  deleteTagsFromCommonStore,
+} from '../../store/AllTags.slice';
 import updateNoteInIndexedDB from '../../indexedDB/updateNoteInIndexedDB';
 import deleteNoteFromIndexedDB from '../../indexedDB/deleteNoteFromIndexedDB';
 
@@ -61,6 +64,7 @@ const NoteItem = (props: INoteItemType): JSX.Element => {
   const deleteNotes = (): void => {
     dispatch(deleteNote(note.id));
     deleteNoteFromIndexedDB(note.id);
+    dispatch(deleteTagsFromCommonStore(textItem));
   };
 
   const editNote = (): void => {
@@ -72,7 +76,7 @@ const NoteItem = (props: INoteItemType): JSX.Element => {
 
   return (
     <ListItem
-      style={listItemStyle}
+      sx={listItemStyle}
       key={note.id}
       secondaryAction={
         <Stack useFlexGap flexDirection={'column'} spacing={1}>

@@ -9,20 +9,7 @@ import {
 import { useEffect, useState, SetStateAction, Dispatch } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { containerStyles } from './styles';
-
-const ITEM_HEIGHT = 38;
-const ITEM_PADDING_TOP = 5;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 3.5 + ITEM_PADDING_TOP,
-      width: 150,
-      backgroundColor: '#fff',
-      fontSize: '12px',
-    },
-  },
-};
+import { MenuProps, containerStyles } from './styles';
 
 interface IFiterTypes {
   selectedTags: string[];

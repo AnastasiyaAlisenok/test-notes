@@ -1,7 +1,6 @@
 import { Modal, Box, Button, Stack } from '@mui/material';
 import { useRef, useEffect, useState, FormEvent } from 'react';
-import { style, ColorButton } from './styles';
-import styles from './ModalCustom.module.css';
+import { style, ColorButton, tagsContainer, field, tagStyle } from './styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { addTag } from '../../store/Tags.slice';
@@ -51,21 +50,21 @@ const ModalCustom = (props: ModalCustomPropsType): JSX.Element => {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <div
-          className={styles.field}
+        <Box
+          sx={field}
           ref={divRef}
           onInput={handleInputChange}
           contentEditable={true}
           dangerouslySetInnerHTML={{ __html: tag }}
-        ></div>
-        <div className={styles.tagsContainer}>
+        ></Box>
+        <Box sx={tagsContainer}>
           {tags &&
             tags.map((tag, index) => (
-              <span className={styles.tag} key={index}>
+              <Box sx={tagStyle} key={index}>
                 {tag}
-              </span>
+              </Box>
             ))}
-        </div>
+        </Box>
         <Stack
           flexDirection={'row'}
           justifyContent={'flex-end'}
@@ -74,8 +73,7 @@ const ModalCustom = (props: ModalCustomPropsType): JSX.Element => {
           spacing={2}
         >
           <Button
-            className={styles.button}
-            sx={{ color: '#f09a06' }}
+            sx={{ color: '#f09a06', width: '8rem' }}
             onClick={() => {
               handleClose();
               clearTextField();
@@ -84,7 +82,7 @@ const ModalCustom = (props: ModalCustomPropsType): JSX.Element => {
             Chancel
           </Button>
           <ColorButton
-            className={styles.button}
+            sx={{ width: '8rem' }}
             variant="contained"
             onClick={() => {
               handleClick();

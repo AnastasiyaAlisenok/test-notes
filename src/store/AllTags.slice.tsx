@@ -21,9 +21,18 @@ const allTagsSlice = createSlice({
         });
       }
     },
+    deleteTagsFromCommonStore: (state, action) => {
+      const tags = action.payload.match(/#\w+/g);
+      console.log(tags);
+      if (tags) {
+        const arr = state.filter((tag) => !tags.includes(tag));
+        return arr;
+      }
+    },
   },
 });
 
 export const { actions, reducer } = allTagsSlice;
 
-export const { addTagsToCommonStore } = allTagsSlice.actions;
+export const { addTagsToCommonStore, deleteTagsFromCommonStore } =
+  allTagsSlice.actions;
