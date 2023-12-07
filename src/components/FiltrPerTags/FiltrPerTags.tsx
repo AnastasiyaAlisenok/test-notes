@@ -9,7 +9,7 @@ import {
 import { useEffect, useState, SetStateAction, Dispatch } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { MenuProps, containerStyles } from './styles';
+import { MenuProps, containerStyles, formControlStyle } from './styles';
 
 interface IFiterTypes {
   selectedTags: string[];
@@ -36,13 +36,7 @@ const FiltPerTags = (props: IFiterTypes): JSX.Element => {
 
   return (
     <div style={containerStyles}>
-      <FormControl
-        sx={{
-          m: 1,
-          width: 150,
-          fontSize: '8px',
-        }}
-      >
+      <FormControl sx={formControlStyle}>
         <InputLabel
           sx={{
             fontSize: '12px',

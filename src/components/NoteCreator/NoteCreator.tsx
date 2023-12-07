@@ -6,6 +6,7 @@ import { RootState } from '../../store/store';
 import createIndexedDB from '../../indexedDB/createIndexedDB';
 import addNoteToIndexedBD from '../../indexedDB/addNoteToIndexedDB';
 import { addNotes } from '../../store/Notes.slice';
+import { noteCreatorStyle } from './styles';
 
 const NoteCreator = (): JSX.Element => {
   const [open, setOpen] = useState(false);
@@ -37,12 +38,7 @@ const NoteCreator = (): JSX.Element => {
       <TextField
         onClick={handleOpen}
         placeholder="Add note"
-        sx={{
-          bgcolor: '#ffffff',
-          marginBottom: '40px',
-          width: '25rem',
-          borderRadius: '5px',
-        }}
+        sx={noteCreatorStyle}
         InputProps={{
           endAdornment: <InputAdornment position="end">+</InputAdornment>,
         }}
