@@ -25,7 +25,7 @@ const notesSlice = createSlice({
         }
       });
     },
-    loadNotesFromDB: (state, action) => {
+    loadNotesFromDB: (_state, action) => {
       return action.payload;
     },
   },
