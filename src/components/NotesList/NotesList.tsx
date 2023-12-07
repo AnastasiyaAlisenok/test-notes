@@ -1,15 +1,24 @@
 import { List } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
 import { listStyle } from './style';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 
 import NoteItem from '../NoteItem/NoteItem';
 import FiltPerTags from '../FiltrPerTags/FiltrPerTags';
+import getNotesFromIndexedDB from '../../indexedDB/getNotesFromIndexedDB';
+import { loadNotesFromDB } from '../../store/Notes.slice';
 
 const NotesList = (): JSX.Element => {
   const notes = useSelector((state: RootState) => state.notes);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getNotesFromIndexedDB.then((notesArr) =>
+      dispatch(loadNotesFromDB(notesArr))
+    );
+  }, [dispatch]);
 
   const filterNotes = useCallback(
     (selectedTags: string[]) => {

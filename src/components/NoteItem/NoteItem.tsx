@@ -6,11 +6,13 @@ import Save from '@mui/icons-material/Save';
 import { listItemStyle, text } from './styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { NotesType, deleteNote, updateItem } from '../../store/Notes.slice';
-import colorText from '../../utils/colorText';
+import { colorText, colorTextString } from '../../utils/colorText';
 import { addTag } from '../../store/Tags.slice';
 import addRange from '../../utils/addRange';
 import { RootState } from '../../store/store';
 import { addTagsToCommonStore } from '../../store/AllTags.slice';
+import updateNoteInIndexedDB from '../../indexedDB/updateNoteInIndexedDB';
+import deleteNoteFromIndexedDB from '../../indexedDB/deleteNoteFromIndexedDB';
 
 interface INoteItemType {
   note: NotesType;
@@ -18,7 +20,8 @@ interface INoteItemType {
 
 const NoteItem = (props: INoteItemType): JSX.Element => {
   const { note } = props;
-  const [textItem, setTextItem] = useState(note.text);
+  const coloredText = colorTextString(note.text).coloredText;
+  const [textItem, setTextItem] = useState(coloredText);
   const [edit, setEdit] = useState(false);
   const itemRef = useRef(null);
   const dispatch = useDispatch();
@@ -29,8 +32,9 @@ const NoteItem = (props: INoteItemType): JSX.Element => {
   }, [textItem]);
 
   useEffect(() => {
-    setTextItem(note.text);
-  }, [note]);
+    setTextItem(coloredText);
+    dispatch(addTagsToCommonStore(coloredText));
+  }, [coloredText, dispatch]);
 
   const handleInputChange = (event: FormEvent<HTMLDivElement>): void => {
     const data = colorText(event);
@@ -44,12 +48,19 @@ const NoteItem = (props: INoteItemType): JSX.Element => {
   const saveNote = (): void => {
     setEdit(false);
     const data = {
+      id: note.id,
       text: textItem,
     };
     dispatch(updateItem({ index: note.id, data }));
+    updateNoteInIndexedDB(data);
     if (tags) {
       dispatch(addTagsToCommonStore(tags));
     }
+  };
+
+  const deleteNotes = (): void => {
+    dispatch(deleteNote(note.id));
+    deleteNoteFromIndexedDB(note.id);
   };
 
   const editNote = (): void => {
@@ -72,11 +83,7 @@ const NoteItem = (props: INoteItemType): JSX.Element => {
           >
             {edit ? <Save /> : <Edit />}
           </IconButton>
-          <IconButton
-            onClick={() => dispatch(deleteNote(note.id))}
-            edge="end"
-            aria-label="delete"
-          >
+          <IconButton onClick={deleteNotes} edge="end" aria-label="delete">
             <DeleteIcon />
           </IconButton>
         </Stack>

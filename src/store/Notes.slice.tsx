@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export type NotesType = {
-  id: number;
+  id: string;
   text: string;
 };
 
@@ -25,9 +25,13 @@ const notesSlice = createSlice({
         }
       });
     },
+    loadNotesFromDB: (state, action) => {
+      return action.payload;
+    },
   },
 });
 
 export const { actions, reducer } = notesSlice;
 
-export const { addNotes, deleteNote, updateItem } = notesSlice.actions;
+export const { addNotes, deleteNote, updateItem, loadNotesFromDB } =
+  notesSlice.actions;

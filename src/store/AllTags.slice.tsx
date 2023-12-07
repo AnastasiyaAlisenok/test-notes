@@ -13,11 +13,13 @@ const allTagsSlice = createSlice({
       } else {
         tags = action.payload.match(/#\w+/g);
       }
-      tags.forEach((tag) => {
-        if (!state.includes(tag)) {
-          state.push(tag);
-        }
-      });
+      if (tags) {
+        tags.forEach((tag) => {
+          if (!state.includes(tag)) {
+            state.push(tag);
+          }
+        });
+      }
     },
   },
 });

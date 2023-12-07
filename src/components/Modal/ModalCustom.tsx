@@ -5,7 +5,7 @@ import styles from './ModalCustom.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { addTag } from '../../store/Tags.slice';
-import colorText from '../../utils/colorText';
+import { colorText } from '../../utils/colorText';
 import addRange from '../../utils/addRange';
 import { addTagsToCommonStore } from '../../store/AllTags.slice';
 
@@ -90,6 +90,7 @@ const ModalCustom = (props: ModalCustomPropsType): JSX.Element => {
               handleClick();
               clearTextField();
               if (tag) {
+                console.log(tag);
                 dispatch(addTagsToCommonStore(tag));
               }
             }}

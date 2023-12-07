@@ -13,4 +13,12 @@ const colorText = (
   }
 };
 
-export default colorText;
+const colorTextString = (value: string): { coloredText: string } => {
+  const coloredText = value.replace(
+    /#(\w+)/g,
+    '<span style="color: blue;">#$1</span>'
+  );
+  return { coloredText };
+};
+
+export { colorText, colorTextString };
