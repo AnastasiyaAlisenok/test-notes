@@ -6,7 +6,6 @@ import { useState, useCallback, useMemo } from 'react';
 
 import NoteItem from '../NoteItem/NoteItem';
 import FiltPerTags from '../FiltrPerTags/FiltrPerTags';
-import { NotesType } from '../../store/Notes.slice';
 
 const NotesList = (): JSX.Element => {
   const notes = useSelector((state: RootState) => state.notes);
@@ -15,15 +14,9 @@ const NotesList = (): JSX.Element => {
   const filterNotes = useCallback(
     (selectedTags: string[]) => {
       if (selectedTags.length > 0) {
-        const arr: NotesType[] = [];
-        notes.forEach((note) =>
-          selectedTags.forEach((tag) => {
-            if (note.text.includes(tag)) {
-              arr.push(note);
-            }
-          })
-        );
-        return arr;
+        return notes.filter((note) => {
+          return selectedTags.every((tag) => note.text.includes(tag));
+        });
       } else {
         return notes;
       }
